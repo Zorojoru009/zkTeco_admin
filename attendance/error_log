@@ -1,0 +1,19 @@
+[20-Aug-2019 13:30:04 UTC] PHP Notice:  Undefined variable: parentId in /home/u44egv3u9w3q/public_html/mp/category/modify.php on line 92
+[20-Aug-2019 13:30:10 UTC] PHP Notice:  Undefined variable: parentId in /home/u44egv3u9w3q/public_html/mp/category/modify.php on line 92
+[22-Aug-2019 05:53:13 UTC] PHP Notice:  Undefined variable: parentId in /home/u44egv3u9w3q/public_html/mp/category/modify.php on line 92
+[22-Aug-2019 05:56:51 UTC] PHP Notice:  Undefined variable: parentId in /home/u44egv3u9w3q/public_html/mp/category/modify.php on line 92
+[22-Aug-2019 08:37:56 UTC] PHP Notice:  Undefined variable: parentId in /home/u44egv3u9w3q/public_html/mp/category/modify.php on line 92
+[21-Oct-2019 15:16:44 UTC] PHP Notice:  Undefined variable: parentId in /home/u44egv3u9w3q/public_html/powertruck/category/modify.php on line 92
+[13-Nov-2019 09:46:17 UTC] PHP Notice:  Undefined variable: parentId in /home/u44egv3u9w3q/public_html/powertrac/category/modify.php on line 92
+[13-Nov-2019 10:08:43 UTC] PHP Notice:  Undefined variable: parentId in /home/u44egv3u9w3q/public_html/powertrac/category/modify.php on line 92
+[14-Nov-2019 10:24:21 UTC] PHP Notice:  Undefined variable: parentId in /home/u44egv3u9w3q/public_html/powertrac/category/modify.php on line 92
+[14-Nov-2019 10:24:30 UTC] PHP Notice:  Undefined variable: parentId in /home/u44egv3u9w3q/public_html/powertrac/category/modify.php on line 92
+[14-Nov-2019 10:26:52 UTC] PHP Notice:  Undefined variable: parentId in /home/u44egv3u9w3q/public_html/powertrac/category/modify.php on line 92
+[27-Nov-2019 03:16:04 UTC] PHP Notice:  Undefined variable: parentId in /home/u44egv3u9w3q/public_html/powertrac/category/modify.php on line 92
+[27-Nov-2019 03:16:24 UTC] PHP Notice:  Undefined variable: parentId in /home/u44egv3u9w3q/public_html/powertrac/category/modify.php on line 92
+[15-Oct-2021 02:04:14 America/Boise] PHP Warning:  require_once(../global-library/config.php): failed to open stream: No such file or directory in /home4/artfullp/public_html/ronald/adminpanel/category/index.php on line 2
+[15-Oct-2021 02:04:14 America/Boise] PHP Fatal error:  require_once(): Failed opening required '../global-library/config.php' (include_path='.:/opt/cpanel/ea-php74/root/usr/share/pear') in /home4/artfullp/public_html/ronald/adminpanel/category/index.php on line 2
+[15-Oct-2021 02:04:19 America/Boise] PHP Warning:  require_once(../global-library/config.php): failed to open stream: No such file or directory in /home4/artfullp/public_html/ronald/adminpanel/category/index.php on line 2
+[15-Oct-2021 02:04:19 America/Boise] PHP Fatal error:  require_once(): Failed opening required '../global-library/config.php' (include_path='.:/opt/cpanel/ea-php74/root/usr/share/pear') in /home4/artfullp/public_html/ronald/adminpanel/category/index.php on line 2
+[15-Oct-2021 02:04:52 America/Boise] PHP Warning:  require_once(../global-library/config.php): failed to open stream: No such file or directory in /home4/artfullp/public_html/ronald/adminpanel/category/index.php on line 2
+[15-Oct-2021 02:04:52 America/Boise] PHP Fatal error:  require_once(): Failed opening required '../global-library/config.php' (include_path='.:/opt/cpanel/ea-php74/root/usr/share/pear') in /home4/artfullp/public_html/ronald/adminpanel/category/index.php on line 2

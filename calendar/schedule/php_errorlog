@@ -1,0 +1,2 @@
+[08-Nov-2023 23:09:28 Asia/Manila] PHP Notice:  Trying to access array offset on value of type bool in /home/customer/www/hris.triapps.co/public_html/calendar/schedule/addEvent.php on line 22
+[08-Nov-2023 23:09:28 Asia/Manila] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/customer/www/hris.triapps.co/public_html/calendar/schedule/addEvent.php:22) in /home/customer/www/hris.triapps.co/public_html/calendar/schedule/addEvent.php on line 112
