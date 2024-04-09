@@ -1,3 +1,4 @@
+<script src="../node_modules/jquery/dist/jquery.min.js"></script>
 <?php
 require_once '../global-library/config.php';
 require_once '../include/functions.php';

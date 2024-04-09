@@ -29,7 +29,7 @@ switch ($action) {
     default :
         // if action is not defined or unknown
         // move to main category page
-        header('Location: index.php');
+        // header('Location: index.php');
 }
 
 function changeBranchNumber(){
@@ -38,7 +38,7 @@ function changeBranchNumber(){
 
     $updateBranch = $conn->prepare("UPDATE bs_config SET branch_number = '$branchNumber' WHERE il_id = '1' ");
     $updateBranch->execute();
-    header("location: index.php");
+    header("location: index.php?feedbackMessage=changeBranchNumberSuccess");
 }
 
 function changeApi(){
@@ -47,7 +47,8 @@ function changeApi(){
 
     $updateApi = $conn->prepare("UPDATE bs_config SET api = '$api' WHERE il_id = '1' ");
     $updateApi->execute();
-    header("location: index.php");
+
+    header("location: index.php?feedbackMessage=changeApiSuccess");
 }
 
 
