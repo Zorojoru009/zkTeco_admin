@@ -17,8 +17,8 @@ switch ($action) {
         changeApi();
         break;
         
-    case 'delete' :
-
+    case 'branchLocation' :
+        changeBranchLocation();
         break;
     
     case 'deleteImage' :
@@ -50,6 +50,17 @@ function changeApi(){
 
     header("location: index.php?feedbackMessage=changeApiSuccess");
 }
+
+function changeBranchLocation(){
+    include '../global-library/database.php';
+    $branch_location = $_POST['branchLocation'];
+
+    $updateApi = $conn->prepare("UPDATE bs_config SET branch_location = '$branch_location' WHERE il_id = '1' ");
+    $updateApi->execute();
+
+    header("location: index.php?feedbackMessage=changeBranchLocationSuccess");
+}
+
 
 
 ?>

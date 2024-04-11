@@ -1,6 +1,7 @@
 <?php
 require_once '../global-library/config.php';
 require_once '../include/functions.php';
+require_once '../global-library/include.php';
 
 checkUser();
 
@@ -36,13 +37,57 @@ switch ($action) {
 */
 function add_data()
 {
-	include '../global-library/database.php';
-	$userId = $_SESSION['user_id'];
-	$fname = $_POST['fname'];
+    include '../global-library/database.php';
+    $userId = $_SESSION['user_id'];
+	
+	$uid = (string) $_POST['uid'];
+	$fname = (string) $_POST['fname'];
+	$mname = (string) $_POST['mname'];
+	$lname = (string) $_POST['lname'];
+	$role = (string) $_POST['role'];
+	$name = (string) ($fname . ' ' . $lname);
+	$user_count =  (int) $_POST['user_count'];
+    $zk = new ZKLibrary('192.168.1.205', 4370, 'TCP');
 
-	header("location: index.php?view=add&success=true");
+    $requester_path = isset($_POST['requester_path']) ? $_POST['requester_path'] : null;
+    try {
+        // Connect to device
+        $zk->connect();
 
+        // Log for debugging
+        echo 'Connected to device<br>';
+        echo 'Name: ' . $name . '<br>';
+        echo 'User ID: ' . $uid . '<br>';
+        echo 'Role: ' . $role . '<br>';
+
+        // Set user data
+       $zk->setUser('', $uid, $name, '', $role);
+
+		$users = $zk->getUser();
+		$user_count++;
+		$user_count_update = $conn->prepare("UPDATE bs_user_count SET user_count = '$user_count' WHERE sl_id = '1'");
+		$user_count_update->execute();
+
+		print_r($users);
+        // JavaScript code to set feedback
+        echo '<script>setFeedbackRequest(0);</script>';
+        echo '<script>window.onload = function() {
+            console.log("JavaScript code executed");
+            // window.location.href = "' . $requester_path . '";
+        }</script>';
+    } catch (Throwable $e) {
+        // Handle errors
+        echo 'Caught Throwable: ' . $e->getMessage() . '<br>';
+
+        // JavaScript code to set feedback
+        echo '<script>setFeedbackRequest(1);</script>';
+        echo '<script>window.onload = function() {
+            console.log("JavaScript code executed");
+            // window.location.href = "' . $requester_path . '";
+        }</script>';
+    }
 }
+
 
 /*
 	Upload an image and return the uploaded image name

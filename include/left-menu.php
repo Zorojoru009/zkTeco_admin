@@ -10,19 +10,54 @@ if (!defined('WEB_ROOT')) {
         $user_image = WEB_ROOT . 'assets/images/profile-picture/noimage.png';
     }
 
-?>	
-	<div class="left-side-menu">
+    $web_root = $_SERVER['DOCUMENT_ROOT'];
+?>
+
+<div id="success-alert-modal" class="modal fade" tabindex="-1" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content modal-filled bg-success">
+            <div class="modal-body">
+                <div class="text-center">
+                    <i class="dripicons-checkmark h1 text-white"></i>
+                    <h4 class="mt-2 text-white">Device Connected Successfully!</h4>
+                    <button type="button" class="btn btn-light my-2" data-bs-dismiss="modal">Continue</button>
+                </div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
+
+<div id="danger-alert-modal" class="modal fade" tabindex="-1" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content modal-filled bg-danger">
+            <div class="modal-body">
+                <div class="text-center">
+                    <i class="dripicons-wrong h1 text-white"></i>
+                    <h4 class="mt-2 text-white">IP Address Not Found</h4>
+                    <p class="mt-3 text-white">Device connection attempt unsuccessful.</p>
+                    <button type="button" class="btn btn-light my-2" data-bs-dismiss="modal">Continue</button>
+                </div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+<div class="left-side-menu">
 
     <div class="h-100" data-simplebar>
 
-         <!-- User box -->
+        <!-- User box -->
         <div class="user-box text-center">
 
-            <img src="<?php echo $user_image; ?>" alt="user-img" title="<?php echo $user_data['lastname']; ?>, <?php echo $user_data['firstname']; ?> <?php echo $user_data['middlename']; ?>" class="rounded-circle img-thumbnail avatar-md">
-                <div class="dropdown">
-                    <a href="#" class="user-name dropdown-toggle h5 mt-2 mb-1 d-block" data-bs-toggle="dropdown"  aria-expanded="false"><?php echo $user_data['firstname']; ?> <?php echo $user_data['lastname']; ?></a>
-                    <div class="dropdown-menu user-pro-dropdown">
-                        <!--
+            <img src="<?php echo $user_image; ?>" alt="user-img"
+                title="<?php echo $user_data['lastname']; ?>, <?php echo $user_data['firstname']; ?> <?php echo $user_data['middlename']; ?>"
+                class="rounded-circle img-thumbnail avatar-md">
+            <div class="dropdown">
+                <a href="#" class="user-name dropdown-toggle h5 mt-2 mb-1 d-block" data-bs-toggle="dropdown"
+                    aria-expanded="false"><?php echo $user_data['firstname']; ?>
+                    <?php echo $user_data['lastname']; ?></a>
+                <div class="dropdown-menu user-pro-dropdown">
+                    <!--
                         <a href="javascript:void(0);" class="dropdown-item notify-item">
                             <i class="fe-user me-1"></i>
                             <span>My Account</span>
@@ -38,14 +73,14 @@ if (!defined('WEB_ROOT')) {
                             <span>Lock Screen</span>
                         </a>
                         -->
-                        <!-- item-->
-                        <a href="javascript:void(0);" class="dropdown-item notify-item">
-                            <i class="fe-log-out me-1"></i>
-                            <span>Logout</span>
-                        </a>
-        
-                    </div>
+                    <!-- item-->
+                    <a href="javascript:void(0);" class="dropdown-item notify-item">
+                        <i class="fe-log-out me-1"></i>
+                        <span>Logout</span>
+                    </a>
+
                 </div>
+            </div>
 
             <p class="text-muted left-user-info"><?php echo $user_data['title']; ?></p>
 
@@ -72,13 +107,28 @@ if (!defined('WEB_ROOT')) {
             <ul id="side-menu">
 
                 <li class="menu-title">Masterlist</li>
-                
+
+
+
+                <li>
+                    <a href="javascript:void(0)" onclick="submitForm()">
+                        <i class="mdi mdi-fingerprint"></i>
+                        <span>Connect Device</span>
+                    </a>
+                    <form style="display: none;" id="connectForm" method="post"
+                        action="<?php echo WEB_ROOT; ?>attendance_device_functions/device_service.php">
+                        <input type="hidden" name="action" value="connect_device">
+                    </form>
+                </li>
+
+
                 <li>
                     <a href="<?php echo WEB_ROOT; ?>">
                         <i class="mdi mdi-view-dashboard"></i>
                         <span> Dashboard </span>
                     </a>
                 </li>
+
 
                 <li>
                     <a href="<?php echo WEB_ROOT; ?>user/">
@@ -91,6 +141,12 @@ if (!defined('WEB_ROOT')) {
                     <a href="<?php echo WEB_ROOT; ?>configurations">
                         <i class="fe-settings"></i>
                         <span> Configurations</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="<?php echo WEB_ROOT; ?>api_module">
+                        <i class="fe-disc"></i>
+                        <span> API Module</span>
                     </a>
                 </li>
                 <!--
@@ -558,7 +614,6 @@ if (!defined('WEB_ROOT')) {
                 </li>
 				-->
             </ul>
-
         </div>
         <!-- End Sidebar -->
 
@@ -568,3 +623,31 @@ if (!defined('WEB_ROOT')) {
     <!-- Sidebar -left -->
 
 </div>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    function submitForm() {
+        document.getElementById("connectForm").submit();
+    }
+    console.log("RUNNING");
+    $(function() {
+        function checkFeedBack() {
+            var feedback = sessionStorage.getItem("dc_feedback");
+            console.log("feedback: " + feedback);
+
+            if (feedback == "error") {
+                $('#danger-alert-modal').modal('show');
+                sessionStorage.setItem("dc_feedback", ""); // Clear feedback after displaying modal
+                console.log("Error modal shown");
+            } else if (feedback == "success") {
+                $('#success-alert-modal').modal('show');
+                sessionStorage.setItem("dc_feedback", ""); // Clear feedback after displaying modal
+                console.log("Success modal shown");
+            } else {
+                console.log("Unexpected feedback value:", feedback);
+            }
+        }
+        checkFeedBack();
+    });
+</script>
