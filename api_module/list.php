@@ -7,6 +7,7 @@ $config= $conn->prepare("SELECT * FROM bs_config WHERE il_id = '1'");
 $config->execute();
 $config_data = $config->fetch();
 $api = $config_data['api'];
+$branch_number = $config_data['branch_number'];
 ?>
 
 <style rel="stylesheet">
@@ -36,6 +37,21 @@ td {
 var pulls = 0;
 var startTime = null;
 var intervalId = null; // Store interval ID
+
+// function callPostAttendance() {
+//             $.ajax({
+//                 url: 'process.php', // Path to your PHP script
+//                 type: 'POST', // HTTP method
+//                 data: {
+//                     action: 'postAttendanceData', // Name of the PHP function you want to call
+//                     // Add any parameters your PHP function requires, e.g., param1: 'value1', param2: 'value2'
+//                 },
+//                 success: function(response) {
+//                     // Handle the response from the PHP function
+//                     console.log(response);
+//                 }
+//             });
+//         }
 
 // Function to update time elapsed
 function updateTimeElapsed() {
@@ -77,47 +93,10 @@ document.getElementById("runButton").addEventListener("click", function() {
         // Start fetching data periodically when run button is clicked
         button.style = "background-color: red";
         document.getElementById("api_module_running").style.display =
-        "block"; // Show API Module Running section
+            "block"; // Show API Module Running section
         document.getElementById("runButton").innerHTML = "STOP"; // Change button text to "STOP"
         startTime = new Date().getTime(); // Set startTime when the button is clicked
         intervalId = setInterval(fetchData, 1000); // Fetch data every 1 second
     }
 });
 </script>
-<?php
-
-//API METHOD SAVE FOR TOMRORROW
-
-// API endpoint URL
-$apiUrl = $api;
-
-// Data to be sent in the POST request
-$postData = array(
-    'key1' => 'value1',
-    'key2' => 'value2'
-);
-
-// Create HTTP header
-$options = array(
-    'http' => array(
-        'method' => 'POST',
-        'header' => 'Content-type: application/x-www-form-urlencoded',
-        'content' => http_build_query($postData)
-    )
-);
-
-// Create context
-$context = stream_context_create($options);
-
-// Send POST request and get response
-$response = file_get_contents($apiUrl, false, $context);
-
-// Check for errors
-if ($response === false) {
-    echo "Error: Unable to connect to API.";
-} else {
-    // Handle response
-    echo "Response from API: " . $response;
-}
-
-?>

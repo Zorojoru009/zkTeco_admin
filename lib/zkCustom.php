@@ -60,7 +60,34 @@ class ZKLibrary{
 	public $attendance_data = array();
 	public $timeout_sec = 5;
 	public $timeout_usec = 500000;
-	
+
+	private function reverseHex($input)
+	{
+		$output = '';
+		for($i=strlen($input); $i>=0; $i--)
+		{
+			$output .= substr($input, $i, 2);
+			$i--;
+		}
+		return $output;
+	}
+	private function decodeTime($data)
+	{
+		$second = $data % 60;
+		$data = $data / 60;
+		$minute = $data % 60;
+		$data = $data / 60;
+		$hour = $data % 24;
+		$data = $data / 24;
+		$day = $data % 31+1;
+		$data = $data / 31;
+		$month = $data % 12+1;
+		$data = $data / 12;
+		$year = floor( $data + 2000 );
+		$d = date("Y-m-d H:i:s", strtotime($year.'-'.$month.'-'.$day.' '.$hour.':'.$minute.':'.$second));
+		return $d;
+
+	}
 
     public function __construct($ip = null, $port = null, $protocol = 'UDP')
 	{
@@ -631,7 +658,8 @@ class ZKLibrary{
 					$u2 = hexdec(substr($u[1], 6, 2));
 					$uid = $u1+($u2*256);
 					$id = str_replace("\0", '', hex2bin(substr($u[1], 8, 16)));
-					$state = hexdec(substr( $u[1], 56, 2 ) );
+					$state = hexdec($this->reverseHex(substr($u[1], 66, 2 )) );
+					// $state = hexdec(substr( $u[1], 56, 2 ) );
 					$timestamp = $this->decodeTime(hexdec($this->reverseHex(substr($u[1], 58, 8))));
 					array_push($attendance, array($uid, $id, $state, $timestamp));
 					$attendance_data = substr($attendance_data, 40 );

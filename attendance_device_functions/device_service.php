@@ -1,4 +1,5 @@
 <script>
+    
 function setFeedback(result) {
     // Log for debugging
     // console.log("setFeedback called with result:", result);

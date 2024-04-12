@@ -13,7 +13,7 @@ if (!defined('WEB_ROOT')) {
     $web_root = $_SERVER['DOCUMENT_ROOT'];
 ?>
 
-<div id="success-alert-modal" class="modal fade" tabindex="-1" style="display: none;" aria-hidden="true">
+<div id="success-alert-modal-menu" class="modal fade" tabindex="-1" style="display: none;" aria-hidden="true">
     <div class="modal-dialog modal-sm">
         <div class="modal-content modal-filled bg-success">
             <div class="modal-body">
@@ -28,7 +28,7 @@ if (!defined('WEB_ROOT')) {
 </div>
 
 
-<div id="danger-alert-modal" class="modal fade" tabindex="-1" style="display: none;" aria-hidden="true">
+<div id="danger-alert-modal-menu" class="modal fade" tabindex="-1" style="display: none;" aria-hidden="true">
     <div class="modal-dialog modal-sm">
         <div class="modal-content modal-filled bg-danger">
             <div class="modal-body">
@@ -111,7 +111,7 @@ if (!defined('WEB_ROOT')) {
 
 
                 <li>
-                    <a href="javascript:void(0)" onclick="submitForm()">
+                    <a href="javascript:void(0)" onclick="submitFormConnect ()">
                         <i class="mdi mdi-fingerprint"></i>
                         <span>Connect Device</span>
                     </a>
@@ -627,21 +627,23 @@ if (!defined('WEB_ROOT')) {
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    function submitForm() {
+    function submitFormConnect() {
         document.getElementById("connectForm").submit();
     }
+
     console.log("RUNNING");
     $(function() {
         function checkFeedBack() {
+
             var feedback = sessionStorage.getItem("dc_feedback");
             console.log("feedback: " + feedback);
 
             if (feedback == "error") {
-                $('#danger-alert-modal').modal('show');
+                $('#danger-alert-modal-menu').modal('show');
                 sessionStorage.setItem("dc_feedback", ""); // Clear feedback after displaying modal
                 console.log("Error modal shown");
             } else if (feedback == "success") {
-                $('#success-alert-modal').modal('show');
+                $('#success-alert-modal-menu').modal('show');
                 sessionStorage.setItem("dc_feedback", ""); // Clear feedback after displaying modal
                 console.log("Success modal shown");
             } else {

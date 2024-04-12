@@ -1,3 +1,22 @@
+<script>
+	    
+function setFeedback(result) {
+    // Log for debugging
+    // console.log("setFeedback called with result:", result);
+
+    // Set feedback based on result
+    if (result == 0) {
+        console.log("Setting feedback to 'success'");
+        sessionStorage.setItem("um_feedback", "success");
+    } else {
+        console.log("Setting feedback to 'error'");
+        sessionStorage.setItem("um_feedback", "error");
+    }
+}
+
+
+</script>
+
 <?php
 require_once '../global-library/config.php';
 require_once '../include/functions.php';
@@ -47,45 +66,70 @@ function add_data()
 	$role = (string) $_POST['role'];
 	$name = (string) ($fname . ' ' . $lname);
 	$user_count =  (int) $_POST['user_count'];
-    $zk = new ZKLibrary('192.168.1.205', 4370, 'TCP');
+  
 
     $requester_path = isset($_POST['requester_path']) ? $_POST['requester_path'] : null;
-    try {
-        // Connect to device
-        $zk->connect();
+	
+	// Function to convert PHP warnings to exceptions
+function handleWarningAsException($errno, $errstr, $errfile, $errline) {
+    throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
+}
 
-        // Log for debugging
-        echo 'Connected to device<br>';
-        echo 'Name: ' . $name . '<br>';
-        echo 'User ID: ' . $uid . '<br>';
-        echo 'Role: ' . $role . '<br>';
+// Set error handler to convert warnings to exceptions
+set_error_handler('handleWarningAsException');
 
-        // Set user data
-       $zk->setUser('', $uid, $name, '', $role);
+try {
+    // Connect to device
+    $zk = new ZKLibrary('192.168.1.205', 4370, 'TCP');
+    $zk->connect();
 
-		$users = $zk->getUser();
-		$user_count++;
-		$user_count_update = $conn->prepare("UPDATE bs_user_count SET user_count = '$user_count' WHERE sl_id = '1'");
-		$user_count_update->execute();
+    // Log for debugging
+    echo 'Connected to device<br>';
+    echo 'Name: ' . $name . '<br>';
+    echo 'User ID: ' . $uid . '<br>';
+    echo 'Role: ' . $role . '<br>';
 
-		print_r($users);
-        // JavaScript code to set feedback
-        echo '<script>setFeedbackRequest(0);</script>';
-        echo '<script>window.onload = function() {
-            console.log("JavaScript code executed");
-            // window.location.href = "' . $requester_path . '";
-        }</script>';
-    } catch (Throwable $e) {
-        // Handle errors
-        echo 'Caught Throwable: ' . $e->getMessage() . '<br>';
+    // Set user data
+    $zk->setUser('', $uid, $name, '', $role);
 
-        // JavaScript code to set feedback
-        echo '<script>setFeedbackRequest(1);</script>';
-        echo '<script>window.onload = function() {
-            console.log("JavaScript code executed");
-            // window.location.href = "' . $requester_path . '";
-        }</script>';
-    }
+    $user_count++;
+
+    // Prepare database queries
+    $user_count_update = $conn->prepare("UPDATE bs_user_count SET user_count = :user_count WHERE sl_id = '1'");
+    $user_count_update->bindParam(':user_count', $user_count, PDO::PARAM_INT);
+
+    $add_user = $conn->prepare("INSERT INTO tbl_users (user_id, role,first_name, middle_name, last_name) VALUES (:uid, :role, :fname, :mname, :lname)");
+    $add_user->bindParam(':uid', $uid, PDO::PARAM_INT);
+    $add_user->bindParam(':role', $role, PDO::PARAM_INT);
+    $add_user->bindParam(':fname', $fname);
+    $add_user->bindParam(':mname', $mname);
+    $add_user->bindParam(':lname', $lname);
+
+    // Execute database operations
+    $user_count_update->execute();
+    $add_user->execute();
+
+    // API SEND TO HRIS
+
+    // JavaScript code to set feedback
+    echo '<script>setFeedback(0);</script>';
+    echo '<script>window.onload = function() {
+        console.log("JavaScript code executed");
+        window.location.href = "' . $requester_path . '";
+    }</script>';
+} catch (Throwable $e) {
+    // Handle errors
+    echo 'Caught Throwable: ' . $e->getMessage() . '<br>';
+
+    // JavaScript code to set feedback
+    echo '<script>setFeedback(1);</script>';
+    echo '<script>window.onload = function() {
+        console.log("JavaScript code executed");
+        // window.location.href = "' . $requester_path . '";
+    }</script>';
+}
+
+	
 }
 
 

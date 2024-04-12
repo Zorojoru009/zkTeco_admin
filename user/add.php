@@ -20,12 +20,41 @@ $user_count = $getUserCount_data['user_count'];
 $currentYear = date('Y');
 // echo $branch_number; echo $currentYear;echo $user_count;
 
-$user_id = $branch_number . $currentYear . $user_count;
+$user_id = $branch_number . $currentYear . $user_count + 1;
 $user_id_display =  $branch_number .'-'. $currentYear .'-'. $user_count;
 $currentPath = $_SERVER['REQUEST_URI'];
 // echo $currentPath;
 ?>
 
+<div id="danger-alert-modal-user" class="modal fade" tabindex="-1" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content modal-filled bg-danger">
+            <div class="modal-body">
+                <div class="text-center">
+                    <i class="dripicons-wrong h1 text-white"></i>
+                    <h4 class="mt-2 text-white">Cannot add user.</h4>
+                    <p class="mt-3 text-white">Device not detected.</p>
+                    <button type="button" class="btn btn-light my-2" data-bs-dismiss="modal">Continue</button>
+                </div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
+
+<div id="success-alert-modal-user" class="modal fade" tabindex="-1" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content modal-filled bg-success">
+            <div class="modal-body">
+                <div class="text-center">
+                    <i class="dripicons-checkmark h1 text-white"></i>
+                    <h4 class="mt-2 text-white">User added successfully</h4>
+                    <button type="button" class="btn btn-light my-2" data-bs-dismiss="modal">Continue</button>
+                </div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
 
 <div class="col-xl-6" style="margin: auto">
     <div class="card">
@@ -77,14 +106,17 @@ $currentPath = $_SERVER['REQUEST_URI'];
                                     </div>
 
                                     <input type="hidden" name="requester_path" value="<?php echo $currentPath;?>">
-                                    <input type="hidden" name="requester_path" value="<?php echo $user_count;?>">
+                                    <input type="hidden" name="user_count" value="<?php echo $user_count;?>">
 
                                     <div class="row mb-3">
                                         <label class="col-md-3 col-form-label" for="fname"> First name</label>
                                         <div class="col-md-9">
                                             <input type="text" id="fname" name="fname" class="form-control" required>
+                                            <!-- Add a span element to display the warning message -->
+                                            <span id="fname-warning" class="text-danger"></span>
                                         </div>
                                     </div>
+
                                     <div class="row mb-3">
                                         <label class="col-md-3 col-form-label" for="mname"> Middle name</label>
                                         <div class="col-md-9">
@@ -95,6 +127,8 @@ $currentPath = $_SERVER['REQUEST_URI'];
                                         <label class="col-md-3 col-form-label" for="lname"> Last name</label>
                                         <div class="col-md-9">
                                             <input type="text" id="surname3" name="lname" class="form-control" required>
+                                            <!-- Add a span element to display the warning message for last name -->
+                                            <span id="lname-warning" class="text-danger"></span>
                                         </div>
                                     </div>
 
@@ -153,7 +187,7 @@ $currentPath = $_SERVER['REQUEST_URI'];
                                 class="btn btn-secondary">Previous</a>
                         </li>
 
-                        <li class="next list-inline-item float-end"><a href="javascript: submitForm();"
+                        <li class="next list-inline-item float-end"><a href="javascript: submitFormProfile();"
                                 class="btn btn-success waves-effect waves-light">Next</a></li>
                     </ul>
 
@@ -192,10 +226,74 @@ document.addEventListener("DOMContentLoaded", function() {
 // Function to submit form immediately
 
 // Function to submit the form with id "profileForm"
-function submitForm() {
+// Function to submit the form with id "profileForm"
+
+
+// Function to submit the form with id "profileForm"
+
+function submitFormProfile() {
     // Get the form element
     var form = document.getElementById("profileForm");
-    // Submit the form
+
+    // Get the values of the First name and Last name input fields
+    var firstName = form.elements["fname"].value.trim();
+    var lastName = form.elements["lname"].value.trim();
+
+    // Get the warning span elements for first name and last name
+    var fnameWarning = document.getElementById("fname-warning");
+    var lnameWarning = document.getElementById("lname-warning");
+
+    // Check if the First name field is empty
+
+    if(firstName == "" || lastName == ""){
+        if (firstName == "") {
+        // If the First name field is empty, display a warning message
+        fnameWarning.textContent = "Please enter your first name.";
+        // Prevent the form from being submitted
+    
+    } else {
+        // If the First name field is not empty, clear the warning message
+        fnameWarning.textContent = "";
+    }
+
+    // Check if the Last name field is empty
+    if (lastName == "") {
+        // If the Last name field is empty, display a warning message
+        lnameWarning.textContent = "Please enter your last name.";
+        // Prevent the form from being submitted
+    } else {
+        // If the Last name field is not empty, clear the warning message
+        lnameWarning.textContent = "";
+    }
+    return false;
+    }else{}
+
+    
+
+    // If both fields are filled, submit the form
     form.submit();
 }
+</script>
+
+<script>
+console.log("RUNNING");
+$(function() {
+    function checkFeedBack() {
+        var feedback = sessionStorage.getItem("um_feedback");
+        console.log("feedback: " + feedback);
+
+        if (feedback == "error") {
+            $('#danger-alert-modal-user').modal('show');
+            sessionStorage.setItem("um_feedback", ""); // Clear feedback after displaying modal
+            console.log("Error modal shown");
+        } else if (feedback == "success") {
+            $('#success-alert-modal-user').modal('show');
+            sessionStorage.setItem("um_feedback", ""); // Clear feedback after displaying modal
+            console.log("Success modal shown");
+        } else {
+            console.log("Unexpected feedback value:", feedback);
+        }
+    }
+    checkFeedBack();
+});
 </script>
