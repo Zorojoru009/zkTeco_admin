@@ -132,7 +132,7 @@ td {
             </div>
 
         </div>
-
+<!-- 
         
         <div class="row" style="text-align:center;">
 
@@ -157,7 +157,7 @@ td {
                 </p>
             </div>
 
-        </div>
+        </div> -->
 
 
         <!-- Modal -->
