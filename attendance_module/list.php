@@ -75,47 +75,7 @@ function fetchData() {
     // Update pulls count
     // Example:
     pulls++;
-    updatePullsCount(pulls);
-    callPHP();
-
-    // Replace 5 with the actual count received from the server
-}
-
-function callPHP() {
-    console.log("callPHP CALLED");
-    // Define the URL of the process.php script
-    const url = 'process.php';
-
-    // Define the data you want to send to the PHP script
-    const data = {
-        action: 'getAttendance'
-    };
-
-    // Make a POST request to process.php using the Fetch API
-    fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json', // Specify the content type as JSON
-            },
-            body: JSON.stringify(data) // Convert data to JSON format
-        })
-        .then(response => {
-            // Handle the response from process.php
-            if (response.ok) {
-                return response.text(); // Return response data as text
-            }
-            throw new Error('Network response was not ok.');
-        })
-        .then(responseText => {
-            // Handle the response text
-            console.log(responseText); // Log the response text
-            
-        })
-        .catch(error => {
-            // Handle any errors that occur during the fetch request
-            console.error('Fetch error:', error);
-        });
-
+    updatePullsCount(pulls); // Replace 5 with the actual count received from the server
 }
 
 // Event listener for run button click
@@ -136,7 +96,7 @@ document.getElementById("runButton").addEventListener("click", function() {
             "block"; // Show API Module Running section
         document.getElementById("runButton").innerHTML = "STOP"; // Change button text to "STOP"
         startTime = new Date().getTime(); // Set startTime when the button is clicked
-        intervalId = setInterval(fetchData, 15000); // Fetch data every 1 second
+        intervalId = setInterval(fetchData, 1000); // Fetch data every 1 second
     }
 });
 </script>

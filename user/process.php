@@ -104,7 +104,6 @@ try {
     $add_user->bindParam(':fname', $fname);
     $add_user->bindParam(':mname', $mname);
     $add_user->bindParam(':lname', $lname);
-
     // Execute database operations
     $user_count_update->execute();
     $add_user->execute();
@@ -125,7 +124,7 @@ try {
     echo '<script>setFeedback(1);</script>';
     echo '<script>window.onload = function() {
         console.log("JavaScript code executed");
-        // window.location.href = "' . $requester_path . '";
+        window.location.href = "' . $requester_path . '";
     }</script>';
 }
 

@@ -111,7 +111,7 @@ if (!defined('WEB_ROOT')) {
 
 
                 <li>
-                    <a href="javascript:void(0)" onclick="submitFormConnect ()">
+                    <a href="javascript:void(0)" onclick="submitFormConnect()">
                         <i class="mdi mdi-fingerprint"></i>
                         <span>Connect Device</span>
                     </a>
@@ -136,6 +136,15 @@ if (!defined('WEB_ROOT')) {
                         <span> Add User </span>
                     </a>
                 </li>
+
+                   
+                <li>
+                    <a href="<?php echo WEB_ROOT; ?>report/index.php?view=employee-log">
+                        <i class="mdi mdi-calendar-clock"></i>
+                        <span> Attendance Log </span>
+                    </a>
+                </li>
+
 
                 <li>
                     <a href="<?php echo WEB_ROOT; ?>configurations">

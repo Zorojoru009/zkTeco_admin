@@ -183,12 +183,12 @@ $currentPath = $_SERVER['REQUEST_URI'];
                     </div>
 
                     <ul class="list-inline wizard mb-0">
-                        <li class="previous list-inline-item"><a href="javascript: void(0);"
-                                class="btn btn-secondary">Previous</a>
-                        </li>
+                        <!-- <li class="previous list-inline-item"><a href="javascript: void(0);"
+                                class="btn btn-secondary"></a>
+                        </li> -->
 
                         <li class="next list-inline-item float-end"><a href="javascript: submitFormProfile();"
-                                class="btn btn-success waves-effect waves-light">Next</a></li>
+                                class="btn btn-success waves-effect waves-light">Add user</a></li>
                     </ul>
 
 
