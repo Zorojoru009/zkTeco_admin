@@ -52,7 +52,6 @@ var intervalId = null; // Store interval ID
 //                 }
 //             });
 //         }
-
 // Function to update time elapsed
 function updateTimeElapsed() {
     if (!startTime) return; // If startTime is not set, return
@@ -68,7 +67,7 @@ function updatePullsCount(count) {
 }
 
 // Function to periodically fetch data from the server
-function fetchData() {
+async function fetchData() {
     // Use XMLHttpRequest or fetch API to fetch updated data from the server
     // Update time elapsed
     updateTimeElapsed();
@@ -76,12 +75,16 @@ function fetchData() {
     // Example:
     pulls++;
     updatePullsCount(pulls);
-    callPHP();
+    await callPHPUser();
+    await callPHPAttendance();
+    await callPHPPostAttendance();
+  //  await callPHPAttendance();
+   // await callPHPPostAttendance();
 
     // Replace 5 with the actual count received from the server
 }
 
-function callPHP() {
+async function callPHPAttendance() {
     console.log("callPHP CALLED");
     // Define the URL of the process.php script
     const url = 'process.php';
@@ -117,6 +120,81 @@ function callPHP() {
         });
 
 }
+
+async function callPHPPostAttendance(){
+    console.log("callPHP CALLED");
+    // Define the URL of the process.php script
+    const url = 'process.php';
+
+    // Define the data you want to send to the PHP script
+    const data = {
+        action: 'postAttendanceData'
+    };
+
+    // Make a POST request to process.php using the Fetch API
+    fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json', // Specify the content type as JSON
+            },
+            body: JSON.stringify(data) // Convert data to JSON format
+        })
+        .then(response => {
+            // Handle the response from process.php
+            if (response.ok) {
+                return response.text(); // Return response data as text
+            }
+            throw new Error('Network response was not ok.');
+        })
+        .then(responseText => {
+            // Handle the response text
+            console.log(responseText); // Log the response text
+            
+        })
+        .catch(error => {
+            // Handle any errors that occur during the fetch request
+            console.error('Fetch error:', error);
+        });
+
+}
+
+async function callPHPUser(){
+    console.log("callPHP CALLED");
+    // Define the URL of the process.php script
+    const url = 'process.php';
+
+    // Define the data you want to send to the PHP script
+    const data = {
+        action: 'postUserData'
+    };
+
+    // Make a POST request to process.php using the Fetch API
+    fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json', // Specify the content type as JSON
+            },
+            body: JSON.stringify(data) // Convert data to JSON format
+        })
+        .then(response => {
+            // Handle the response from process.php
+            if (response.ok) {
+                return response.text(); // Return response data as text
+            }
+            throw new Error('Network response was not ok.');
+        })
+        .then(responseText => {
+            // Handle the response text
+            console.log(responseText); // Log the response text
+            
+        })
+        .catch(error => {
+            // Handle any errors that occur during the fetch request
+            console.error('Fetch error:', error);
+        });
+
+}
+
 
 // Event listener for run button click
 document.getElementById("runButton").addEventListener("click", function() {

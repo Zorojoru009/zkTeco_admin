@@ -23,6 +23,7 @@ $currentYear = date('Y');
 $user_id = $branch_number . $currentYear . $user_count + 1;
 $user_id_display =  $branch_number .'-'. $currentYear .'-'. $user_count;
 $currentPath = $_SERVER['REQUEST_URI'];
+$currentDateTime = date('Y-m-d H:i:s');
 // echo $currentPath;
 ?>
 
