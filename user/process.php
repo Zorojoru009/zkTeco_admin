@@ -97,13 +97,14 @@ try {
     // Prepare database queries
     $user_count_update = $conn->prepare("UPDATE bs_user_count SET user_count = :user_count WHERE sl_id = '1'");
     $user_count_update->bindParam(':user_count', $user_count, PDO::PARAM_INT);
-
-    $add_user = $conn->prepare("INSERT INTO tbl_users (user_id, role,first_name, middle_name, last_name) VALUES (:uid, :role, :fname, :mname, :lname)");
+	$currentDateTime = date('Y-m-d H:i:s');
+    $add_user = $conn->prepare("INSERT INTO tbl_users (user_id, role,first_name, middle_name, last_name, date_time) VALUES (:uid, :role, :fname, :mname, :lname, :date_time)");
     $add_user->bindParam(':uid', $uid, PDO::PARAM_INT);
     $add_user->bindParam(':role', $role, PDO::PARAM_INT);
     $add_user->bindParam(':fname', $fname);
     $add_user->bindParam(':mname', $mname);
     $add_user->bindParam(':lname', $lname);
+	$add_user->bindParam(':date_time', $currentDateTime);
     // Execute database operations
     $user_count_update->execute();
     $add_user->execute();
