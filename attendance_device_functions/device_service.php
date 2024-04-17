@@ -64,7 +64,7 @@ function connect_device() {
 
     try {
         // Your code that may throw warnings or notices
-        $zk = new ZKLibrary('192.168.1.205', 4370, 'TCP');
+        $zk = new ZKLibrary('192.168.1.31', 4370, 'TCP');
         echo 'Library Loaded<br>';
         echo 'Requesting connection<br>';
         $zk->connect();
@@ -104,7 +104,7 @@ function connect_device_request() {
 
     try {
         // Your code that may throw warnings or notices
-        $zk = new ZKLibrary('192.168.1.205', 4370, 'TCP');
+        $zk = new ZKLibrary('192.168.0.31', 4370, 'TCP');
         echo 'Library Loaded<br>';
         echo 'Requesting connection<br>';
         $zk->connect();

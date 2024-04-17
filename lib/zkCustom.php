@@ -49,7 +49,7 @@ define('LEVEL_MANAGER', 12);      // 0000 1100
 define('LEVEL_SUPERMANAGER', 14); // 000
 
 class ZKLibrary{
-	public $ip = null;
+	public $ips = null;
 	public $port = null;
 	public $socket = null;
 	public $protocol = null;
@@ -60,6 +60,7 @@ class ZKLibrary{
 	public $attendance_data = array();
 	public $timeout_sec = 5;
 	public $timeout_usec = 500000;
+	public $ip = '192.168.0.31';
 
 	private function reverseHex($input)
 	{
@@ -71,6 +72,7 @@ class ZKLibrary{
 		}
 		return $output;
 	}
+
 	private function decodeTime($data)
 	{
 		$second = $data % 60;
@@ -89,8 +91,8 @@ class ZKLibrary{
 
 	}
 
-    public function __construct($ip = null, $port = null, $protocol = 'UDP')
-	{
+    public function __construct($ips = null, $port = null, $protocol = 'UDP')
+	{$ip = '192.168.0.205';
 		if($ip != null)
 		{
 			$this->ip = $ip;
