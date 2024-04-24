@@ -153,6 +153,12 @@ if (!defined('WEB_ROOT')) {
                     </a>
                 </li>
                 <li>
+                    <a href="<?php echo WEB_ROOT; ?>ip-config">
+                        <i class="fe-settings"></i>
+                        <span>IP config</span>
+                    </a>
+                </li>
+                <li>
                     <a href="<?php echo WEB_ROOT; ?>api_module">
                         <i class="fe-disc"></i>
                         <span> API Module</span>

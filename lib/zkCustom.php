@@ -1,5 +1,4 @@
 <?php 
-
 define('CMD_CONNECT', 1000);
 define('CMD_EXIT', 1001);
 define('CMD_ENABLEDEVICE', 1002);
@@ -49,6 +48,8 @@ define('LEVEL_MANAGER', 12);      // 0000 1100
 define('LEVEL_SUPERMANAGER', 14); // 000
 
 class ZKLibrary{
+
+	
 	public $ips = null;
 	public $port = null;
 	public $socket = null;
@@ -92,7 +93,16 @@ class ZKLibrary{
 	}
 
     public function __construct($ips = null, $port = null, $protocol = 'UDP')
-	{$ip = '192.168.0.205';
+	{ 
+		include '../global-library/database.php';
+		require_once '../global-library/config.php';
+		require_once '../include/functions.php';
+
+		 $get_config = $conn->prepare("SELECT * FROM bs_config WHERE il_id = '1' ");
+		$get_config->execute();
+		$config_data = $get_config->fetch();
+		$ip = $config_data['ip'];
+		// $ip = '192.168.0.205';
 		if($ip != null)
 		{
 			$this->ip = $ip;
@@ -420,6 +430,40 @@ class ZKLibrary{
 		}
 	}
 
+	private function getSizeUser()
+	{
+		$u = unpack('H2h1/H2h2/H2h3/H2h4/H2h5/H2h6/H2h7/H2h8', substr($this->received_data, $this->start_data, 8));
+		$command = hexdec($u['h2'].$u['h1']);
+		if($command == CMD_PREPARE_DATA)
+		{
+			$u = unpack('H2h1/H2h2/H2h3/H2h4', substr($this->received_data, $this->start_data + 8, 4));
+			$size = hexdec($u['h4'].$u['h3'].$u['h2'].$u['h1']);
+			return $size;
+		}
+		else
+		{
+			return FALSE;
+		}
+	}
+	
+	/* 
+	private function getSizeUser()
+	{
+		$u = unpack('H2h1/H2h2/H2h3/H2h4/H2h5/H2h6/H2h7/H2h8', substr($this->received_data, $this->start_data, 8));
+		$command = hexdec($u['h2'].$u['h1']);
+		if($command == CMD_PREPARE_DATA)
+		{
+			$u = unpack('H2h1/H2h2/H2h3/H2h4', substr($this->received_data, $this->start_data + 8, 4));
+			$size = hexdec($u['h4'].$u['h3'].$u['h2'].$u['h1']);
+			return $size;
+		}
+		else
+		{
+			return FALSE;
+		}
+	}
+	
+	*/ 
 	public function getUser()
 	{
 		if ($this->protocol == 'TCP') {
