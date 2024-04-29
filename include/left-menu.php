@@ -145,18 +145,25 @@ if (!defined('WEB_ROOT')) {
                     </a>
                 </li>
 
-
-                <li>
-                    <a href="<?php echo WEB_ROOT; ?>configurations">
+                <li class="menuitem-active">
+                    <a href="#sidebarTasks" data-bs-toggle="collapse" aria-expanded="false" class="collapsed">
                         <i class="fe-settings"></i>
-                        <span> Configurations</span>
+                        <span> Configuration Panel </span>
+                        <span class="menu-arrow"></span>
                     </a>
-                </li>
-                <li>
-                    <a href="<?php echo WEB_ROOT; ?>ip-config">
-                        <i class="fe-settings"></i>
-                        <span>IP config</span>
-                    </a>
+                    <div class="collapse" id="sidebarTasks" style="">
+                        <ul class="nav-second-level">
+                            <li class="menuitem-active">
+                                <a href="<?php echo WEB_ROOT; ?>configurations" class="active">Configurations</a>
+                            </li>
+                            <li>
+                                <a href="<?php echo WEB_ROOT; ?>ip-config">IP Config</a>
+                            </li>
+                            <li>
+                                <a href="<?php echo WEB_ROOT; ?>initialize_branch">Initialize Branch</a>
+                            </li>
+                        </ul>
+                    </div>
                 </li>
                 <li>
                     <a href="<?php echo WEB_ROOT; ?>api_module">
