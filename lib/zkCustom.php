@@ -120,7 +120,7 @@ class ZKLibrary{
 		}
 		else {
 			$this->socket = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
-			$this->setTimeout($this->sec, $this->usec);
+			$this->setTimeout($this->timeout_sec, $this->timeout_usec);
 		}
 	}
 
@@ -642,6 +642,35 @@ class ZKLibrary{
 		}
 	}
 
+	private function getSizeAttendance()
+	{
+		$u = unpack('H2h1/H2h2/H2h3/H2h4/H2h5/H2h6/H2h7/H2h8', substr($this->received_data, $this->start_data, 8));
+		$command = hexdec($u['h2'].$u['h1'] );
+		if($command == CMD_PREPARE_DATA)
+		{
+			$u = unpack('H2h1/H2h2/H2h3/H2h4', substr( $this->received_data, $this->start_data + 8, 4));
+			$size = hexdec($u['h4'].$u['h3'].$u['h2'].$u['h1']);
+			return $size;
+		}
+		else
+		{
+			return FALSE;
+		}
+	}
+
+	public function setTimeout($sec = 0, $usec = 0)
+	{
+		if($sec != 0)
+		{
+			$this->timeout_sec = $sec;
+		}
+		if($usec != 0)
+		{
+			$this->timeout_usec = $usec;
+		}
+		$timeout = array('sec'=>$this->timeout_sec, 'usec'=>$this->timeout_usec);
+		socket_set_option($this->socket, SOL_SOCKET, SO_RCVTIMEO, $timeout);
+	}
 	public function getAttendance()
 	{
 		if ($this->protocol == 'TCP') {
