@@ -53,7 +53,7 @@ class ZKLibrary{
 	public $ips = null;
 	public $port = null;
 	public $socket = null;
-	public $protocol = null;
+	public $protocol = 'UDP';
 	public $session_id = 0;
 	public $received_data = '';
 	public $start_data = 0;
@@ -92,7 +92,7 @@ class ZKLibrary{
 
 	}
 
-    public function __construct($ips = null, $port = null, $protocol = 'UDP')
+    public function __construct($ips = null, $ports = null, $protocols = 'UDP')
 	{ 
 		include '../global-library/database.php';
 		require_once '../global-library/config.php';
@@ -102,6 +102,8 @@ class ZKLibrary{
 		$get_config->execute();
 		$config_data = $get_config->fetch();
 		$ip = $config_data['ip'];
+		$protocol = 'UDP';
+		$port = 4370;
 		// $ip = '192.168.0.205';
 		if($ip != null)
 		{

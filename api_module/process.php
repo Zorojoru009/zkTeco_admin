@@ -79,10 +79,11 @@
         // $zk->setUser('', '12335', 'kevin', '', '4');    
         // $users = $zk->getUser();
 
-        $zk = new ZKLibrary('192.168.1.205', 4370, 'TCP');
+        $zk = new ZKLibrary('192.168.1.205', 4370, 'UDP');
         $zk->connect();
 
         $users_attendance = $zk->getAttendance();
+        echo "Get attendance Success";
         // $attendance_json = json_encode($users_attendance);
 
         foreach ($users_attendance as $attendance){
