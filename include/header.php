@@ -209,18 +209,18 @@ if (!defined('WEB_ROOT')) {
         <div class="logo-box">
             <a href="<?php echo WEB_ROOT; ?>" class="logo logo-light text-center">
                 <span class="logo-sm">
-                    <img src="<?php echo WEB_ROOT; ?>assets/images/trams-logo.png" alt="" height="20">
+                    <img src="<?php echo WEB_ROOT; ?>assets/images/breadbox-logo.png" alt="" height="20">
                 </span>
                 <span class="logo-lg">
-                    <img src="<?php echo WEB_ROOT; ?>assets/images/trams-logo.png" alt="" height="40">
+                    <img src="<?php echo WEB_ROOT; ?>assets/images/breadbox-logo.png" alt="" height="40">
                 </span>
             </a>
             <a href="<?php echo WEB_ROOT; ?>" class="logo logo-dark text-center">
                 <span class="logo-sm">
-                    <img src="<?php echo WEB_ROOT; ?>assets/images/trams-logo.png" alt="" height="20">
+                    <img src="<?php echo WEB_ROOT; ?>assets/images/breadbox-logo.png" alt="" height="20">
                 </span>
                 <span class="logo-lg">
-                    <img src="<?php echo WEB_ROOT; ?>assets/images/trams-logo.png" alt="" height="40">
+                    <img src="<?php echo WEB_ROOT; ?>assets/images/breadbox-logo.png" alt="" height="40">
                 </span>
             </a>
         </div>

@@ -129,7 +129,7 @@ if (!defined('WEB_ROOT')) {
                     </a>
                 </li>
 
-
+                
                 <li>
                     <a href="<?php echo WEB_ROOT; ?>user/">
                         <i class="fe-user-plus"></i>
@@ -137,7 +137,7 @@ if (!defined('WEB_ROOT')) {
                     </a>
                 </li>
 
-                   
+                <?php  if($user_data['is_admin'] == 1) :?>
                 <li>
                     <a href="<?php echo WEB_ROOT; ?>report/index.php?view=employee-log">
                         <i class="mdi mdi-calendar-clock"></i>
@@ -171,6 +171,8 @@ if (!defined('WEB_ROOT')) {
                         <span> API Module</span>
                     </a>
                 </li>
+
+                <?php endif;?>
                 <!--
                 <li>
                     <a href="<?php echo WEB_ROOT; ?>kanban/">

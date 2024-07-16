@@ -104,9 +104,6 @@ function doLogout()
 	if (isset($_SESSION['user_id'])) {
 		$userId = $_SESSION['user_id'];
 		
-		$ltn = $conn->prepare("UPDATE tbl_location SET is_active = '0' WHERE l_id = '1'");
-		$ltn->execute();
-		
 		$stat = $conn->prepare("UPDATE bs_user SET is_active = '0', last_logout = '$today_date1' WHERE user_id = '$userId'");
 		$stat->execute();
 		

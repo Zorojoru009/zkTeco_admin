@@ -4,7 +4,7 @@ if (!defined('WEB_ROOT')) {
 	exit;
 }
 ?>
-	<link rel="shortcut icon" href="<?php echo WEB_ROOT; ?>assets/images/favicon.ico">
+	<link rel="shortcut icon" href="<?php echo WEB_ROOT; ?>assets\images\breadbox-logo.png">
 
     <!-- App css -->
 	<link href="<?php echo WEB_ROOT; ?>assets/css/config/default/bootstrap.min.css" rel="stylesheet" type="text/css" id="bs-default-stylesheet" />
