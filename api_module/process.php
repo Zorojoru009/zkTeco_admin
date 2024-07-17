@@ -229,7 +229,6 @@ if ($users_attendance) {
 }
     }
 
-
     function postUserData() {
 
         require_once '../global-library/config.php';
@@ -237,35 +236,25 @@ if ($users_attendance) {
         include '../global-library/database.php';
         require_once '../global-library/include.php';
         
-        // $zk = new ZKLibrary('192.168.1.205', 4370, 'TCP');
-        // echo 'Library Loaded<br>';
-        // echo 'Requesting connection<br>';
-        // $zk->connect();
-        // Your PHP function code here 
-        // URL to which the POST request will be sent
         $currentDateTime = date('Y-m-d H:i:s');
-        // Data to be sent in the POST request
-        // $get_users = $conn->prepare("SELECT * FROM tbl_attendance WHERE    ");
         $oneWeekAgo = date('Y-m-d H:i:s', strtotime('-1 week'));
         
         $get_users = $conn->prepare("SELECT * FROM tbl_users WHERE date_time >= :oneWeekAgo AND is_sent = '0'");
-$get_users->bindParam(":oneWeekAgo", $oneWeekAgo, PDO::PARAM_STR);
-$get_users->execute();
-
+        $get_users->bindParam(":oneWeekAgo", $oneWeekAgo, PDO::PARAM_STR);
+        $get_users->execute();
+    
         $all_users = $get_users->fetchAll(PDO::FETCH_ASSOC);
         $config = $conn->prepare("SELECT * FROM bs_config WHERE il_id = '1'");
         $config->execute();
         $config_data = $config->fetch();
-        $branch_number =  $config_data['branch_number'];
+        $branch_number = $config_data['branch_number'];
         $url = $config_data['api'] . '/biometric/index.php';
-
-        echo 'Connected<br>' .'<br> all users:';
-
+    
+        echo 'Connected<br><br> all users:';
         print_r($all_users);
+    
         if ($all_users) {
             echo 'users sending';
-            // Fetch the results
-            // Output data of each row
             foreach ($all_users as $user) {
                 echo 'user current :';
                 print_r($user);
@@ -274,65 +263,51 @@ $get_users->execute();
                 $mname = $user['middle_name'];
                 $lname = $user['last_name'];
                 $ul_id = $user['ul_id'];
-                // $byte = $zk->getUserTemplateAll($user_id);
-                echo 'BYTE';
-                print_r($byte);
+    
                 $data = array(
                     'e_id' => $user_id,
                     'fname' => $fname,
                     'mname' => $mname,
                     'lname' => $lname,
                     'branch_number' => $branch_number,
-                    // 'byte' => $byte,
                     'action' => 'register'
                 );
-                
-                // Convert data array to query string format
-                $data_query = http_build_query($data);
-                
-                // Set stream context options
-                $options = array(
-                    'http' => array(
-                        'method' => 'POST',
-                        'header' => 'Content-type: application/x-www-form-urlencoded',
-                        'content' => $data_query,
-                    ),
-                );
-                
-                // Create stream context
-                $context = stream_context_create($options);
-                
-                // Send POST request and capture the response
-                $response = file_get_contents($url, false, $context);
-                
-                // Get the status code from the response headers
-                $status_code = null;
-                
-                if (isset($http_response_header)) {
-                    foreach ($http_response_header as $header) {
-                        if (preg_match('/^HTTP\/\d+\.\d+\s+(\d+)/', $header, $matches)) {
-                            $status_code = intval($matches[1]);
-                            break;
-                        }
+    
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, $url);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+                curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true); // Follow redirects
+                curl_setopt($ch, CURLOPT_MAXREDIRS, 10); // Set the maximum number of redirects
+    
+                $response = curl_exec($ch);
+                $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    
+                if ($response === false) {
+                    $error_msg = curl_error($ch);
+                    echo "cURL Error: $error_msg";
+                } else {
+                    echo "Response status code: " . $http_code . "<br />";
+                    echo "Response body: " . $response . "<br />";
+                    if ($http_code == 200) {
+                        $is_sent = $conn->prepare("UPDATE tbl_users SET is_sent = '1' WHERE ul_id = :ul_id");
+                        $is_sent->bindParam(':ul_id', $ul_id, PDO::PARAM_INT);
+                        $is_sent->execute();
+                        echo "sent thank you<br />";
+                    } else {
+                        echo "error<br />";
                     }
                 }
-                
-                // Process the response
-                echo "Response status code: " . $status_code . "\n";
-                echo "Response body: " . $response;
-                if($status_code == 200){
-                    $is_sent = $conn->prepare("UPDATE tbl_users SET is_sent = '1' WHERE ul_id = $ul_id");
-                    $is_sent->execute();
-                    echo "sent thank you";
-                }else{
-                    echo "error";
-                }
-                
+    
+                curl_close($ch);
             }
         } else {
             echo "0 results";
         }
-            }
+    }
+    
+
 
          function initializeBranch(){
             
