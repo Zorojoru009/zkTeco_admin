@@ -130,104 +130,80 @@
     }
 
 
+    function postAttendanceData() {
+
+        require_once '../global-library/config.php';
+        require_once '../include/functions.php';
+        include '../global-library/database.php';
+        require_once '../global-library/include.php';
     
-function postAttendanceData() {
-
-require_once '../global-library/config.php';
-require_once '../include/functions.php';
-include '../global-library/database.php';
-require_once '../global-library/include.php';
-// Your PHP function code here 
-
-       
-// URL to which the POST request will be sent
-$currentDateTime = date('Y-m-d H:i:s');
-// Data to be sent in the POST request
-// $get_attendance = $conn->prepare("SELECT * FROM tbl_attendance WHERE    ");
-$oneWeekAgo = date('Y-m-d H:i:s', strtotime('-1 week'));
-
-$get_attendance = $conn->prepare("SELECT * FROM tbl_attendance WHERE date_time >= :oneWeekAgo AND is_sent = '0'");
-$get_attendance->bindParam(":oneWeekAgo", $oneWeekAgo, PDO::PARAM_STR);
-
-// Execute the query
-$get_attendance->execute(); 
-$users_attendance = $get_attendance->fetchAll(PDO::FETCH_ASSOC);
-$config = $conn->prepare("SELECT * FROM bs_config WHERE il_id = '1'");
-$config->execute();
-$config_data = $config->fetch();
-$branch_number =  $config_data['branch_number'];
-$url = $config_data['api'] . '/biometric/index.php';
-
-if ($users_attendance) {
-    // Fetch the results
-    // Output data of each row
-    foreach ($users_attendance as $attendance) {
-
-        if($attendance['is_sent'] == 0){
-            $id_num = $attendance['id_num'];
-            $log_type = $attendance['log_type'];
-            $date_time = $attendance['date_time'];
-            $al_id = $attendance['al_id'];
-            
-            // Output your data here
-            $data = array(
-                'e_id' => $id_num,
-                'log_type' => $log_type,
-                'date_time' => $date_time,
-                'branch_number' => $branch_number,
-                'action' => 'log'
-            );
-            
-            // Convert data array to query string format
-            $data_query = http_build_query($data);
-            
-            // Set stream context options
-            $options = array(
-                'http' => array(
-                    'method' => 'POST',
-                    'header' => 'Content-type: application/x-www-form-urlencoded',
-                    'content' => $data_query,
-                ),
-            );
-            
-            // Create stream context
-            $context = stream_context_create($options);
-            
-            // Send POST request and capture the response
-            $response = file_get_contents($url, false, $context);
-            
-            // Get the status code from the response headers
-            $status_code = null;
-            if (isset($http_response_header)) {
-                foreach ($http_response_header as $header) {
-                    if (preg_match('/^HTTP\/\d+\.\d+\s+(\d+)/', $header, $matches)) {
-                        $status_code = intval($matches[1]);
-                        break;
+        $currentDateTime = date('Y-m-d H:i:s');
+        $oneWeekAgo = date('Y-m-d H:i:s', strtotime('-1 week'));
+    
+        $get_attendance = $conn->prepare("SELECT * FROM tbl_attendance WHERE date_time >= :oneWeekAgo AND is_sent = '0'");
+        $get_attendance->bindParam(":oneWeekAgo", $oneWeekAgo, PDO::PARAM_STR);
+    
+        $get_attendance->execute(); 
+        $users_attendance = $get_attendance->fetchAll(PDO::FETCH_ASSOC);
+        $config = $conn->prepare("SELECT * FROM bs_config WHERE il_id = '1'");
+        $config->execute();
+        $config_data = $config->fetch();
+        $branch_number = $config_data['branch_number'];
+        $url = $config_data['api'] . '/biometric/index.php';
+    
+        if ($users_attendance) {
+            foreach ($users_attendance as $attendance) {
+                if ($attendance['is_sent'] == 0) {
+                    $id_num = $attendance['id_num'];
+                    $log_type = $attendance['log_type'];
+                    $date_time = $attendance['date_time'];
+                    $al_id = $attendance['al_id'];
+    
+                    $data = array(
+                        'e_id' => $id_num,
+                        'log_type' => $log_type,
+                        'date_time' => $date_time,
+                        'branch_number' => $branch_number,
+                        'action' => 'log'
+                    );
+    
+                    $ch = curl_init();
+                    curl_setopt($ch, CURLOPT_URL, $url);
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                    curl_setopt($ch, CURLOPT_POST, true);
+                    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+                    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true); // Follow redirects
+                    curl_setopt($ch, CURLOPT_MAXREDIRS, 10); // Set the maximum number of redirects
+    
+                    $response = curl_exec($ch);
+                    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    
+                    if ($response === false) {
+                        $error_msg = curl_error($ch);
+                        echo "cURL Error: $error_msg";
+                    } else {
+                        echo "Response status code: " . $http_code . "\n";
+                        echo "Response body: " . $response;
+                        if ($http_code == 200) {
+                            $is_sent = $conn->prepare("UPDATE tbl_attendance SET is_sent = '1' WHERE al_id = :al_id");
+                            $is_sent->bindParam(':al_id', $al_id, PDO::PARAM_INT);
+                            $is_sent->execute();
+                            echo 'attendance sent';
+                        } else {
+                            echo "error";
+                        }
                     }
+    
+                    curl_close($ch);
+                } else {
+                    echo "already sent";
                 }
             }
-            
-            // Process the response
-            echo "Response status code: " . $status_code . "\n";
-            echo "Response body: " . $response;
-            if($status_code == 200){
-                $is_sent = $conn->prepare("UPDATE tbl_attendance SET is_sent = '1' WHERE al_id = $al_id");
-                $is_sent->execute();
-                echo 'attendance sent';
-            }else{
-                echo "error";
-            }
-            
-
-        }else{
-            echo "already sent";
+        } else {
+            echo "0 results";
         }
-
     }
-} else {
-    echo "0 results";
-}
-    }
+    
 
     function postUserData() {
 
