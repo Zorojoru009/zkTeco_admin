@@ -103,7 +103,7 @@
             // Check if any rows were returned
             if(!$check_data) { // If no rows returned
                 // Prepare the INSERT query with placeholders
-                $get_attendance_id_num = $conn->prepare("SELECT * FROM tbl_attendance WHERE id_num = ? ORDER BY al_id DESC LIMIT 1");
+                $get_attendance_id_num = $conn->prepare("SELECT * FROM tbl_attendance WHERE id_num = ? ORDER BY date_time DESC LIMIT 1");
                 $get_attendance_id_num->execute([$id_num]);
                 $latest_attendance_id_num = $get_attendance_id_num->fetch();
 
