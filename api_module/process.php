@@ -69,6 +69,7 @@
         require_once '../include/functions.php';
         include '../global-library/database.php';
         require_once '../global-library/include.php';
+        
         // Your PHP function code here 
         echo 'Library Loaded</br>';
     
@@ -103,7 +104,8 @@
             // Check if any rows were returned
             if(!$check_data) { // If no rows returned
                 // Prepare the INSERT query with placeholderss
-                $today = date('Y-m-d');
+                $today = date('Y-m-d', strtotime($date));
+                $today = $date;
                 $get_attendance_id_num = $conn->prepare("SELECT * FROM tbl_attendance WHERE id_num = ? AND date_time LIKE ? ORDER BY date_time DESC LIMIT 1");
                 $today = $today . '%';
                 $get_attendance_id_num->execute([$id_num, $today]); 
@@ -121,6 +123,10 @@
                         $insertAttendance = $conn->prepare("INSERT INTO tbl_attendance (id_num, log_type, date_time) VALUES (?, ?, ?)");
                         // Execute the INSERT query with values
                         $insertAttendance->execute([$id_num, $log_type, $date]);
+                    }else{
+                        $insertAttendance = $conn->prepare("INSERT INTO tbl_attendance (id_num, log_type, date_time) VALUES (?, ?, ?, ?)");
+                        // Execute the INSERT query with values
+                        $insertAttendance->execute([$id_num, $log_type, $date, 1]);
                     }
                 } else {
                     if($log_type == 0){
@@ -128,6 +134,10 @@
                         // Execute the INSERT query with values
                         $insertAttendance->execute([$id_num, $log_type, $date]);
 
+                    }else{
+                        $insertAttendance = $conn->prepare("INSERT INTO tbl_attendance (id_num, log_type, date_time, is_duplicate) VALUES (?, ?, ?, ?)");
+                        // Execute the INSERT query with values
+                        $insertAttendance->execute([$id_num, $log_type, $date, 1]);
                     }
 
                 }
@@ -168,7 +178,7 @@
     
         if ($users_attendance) {
             foreach ($users_attendance as $attendance) {
-                if ($attendance['is_sent'] == 0) {
+                if ($attendance['is_sent'] == 0 && $attendance['is_duplicate'] == 0) {
                     $id_num = $attendance['id_num'];
                     $log_type = $attendance['log_type'];
                     $date_time = $attendance['date_time'];
