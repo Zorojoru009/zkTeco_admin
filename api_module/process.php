@@ -65,6 +65,7 @@
     // Example PHP function
 
     function getAttendance() {
+
         require_once '../global-library/config.php';
         require_once '../include/functions.php';
         include '../global-library/database.php';
@@ -96,29 +97,28 @@
             $id_num = $attendance[1];
             $log_type = $attendance[2];
             $date = $attendance[3];
-        
+
             // Prepare and execute the SELECT query with placeholders
             $check = $conn->prepare("SELECT * FROM tbl_attendance WHERE id_num = ? AND log_type = ? AND date_time = ?");
             $check->execute([$id_num, $log_type, $date]);
             $check_data = $check->fetch();
+
             // Check if any rows were returned
+            
             if(!$check_data) { // If no rows returned
                 // Prepare the INSERT query with placeholderss
+
                 $today = date('Y-m-d', strtotime($date));
-                $today = $date;
                 $get_attendance_id_num = $conn->prepare("SELECT * FROM tbl_attendance WHERE id_num = ? AND date_time LIKE ? ORDER BY date_time DESC LIMIT 1");
                 $today = $today . '%';
+                
                 $get_attendance_id_num->execute([$id_num, $today]); 
-
-              
 
                 // Execute the SELECT query
                 $latest_attendance_id_num = $get_attendance_id_num->fetch();
               echo "latest id num $id_num :"; print_r($latest_attendance_id_num); 
                 if($get_attendance_id_num->rowCount() > 0){
                     $is_log = $latest_attendance_id_num['log_type'];
-
-                    // Cgecj uf the previous data is login  so insert logout
                     if(($is_log == 0 && $log_type == 1) || ($is_log == 1 && $log_type == 0)){
                         $insertAttendance = $conn->prepare("INSERT INTO tbl_attendance (id_num, log_type, date_time) VALUES (?, ?, ?)");
                         // Execute the INSERT query with values
@@ -128,30 +128,21 @@
                         // Execute the INSERT query with values
                         $insertAttendance->execute([$id_num, $log_type, $date, 1]);
                     }
-                } else {
+                }else{
                     if($log_type == 0){
                         $insertAttendance = $conn->prepare("INSERT INTO tbl_attendance (id_num, log_type, date_time) VALUES (?, ?, ?)");
                         // Execute the INSERT query with values
                         $insertAttendance->execute([$id_num, $log_type, $date]);
-
                     }else{
                         $insertAttendance = $conn->prepare("INSERT INTO tbl_attendance (id_num, log_type, date_time, is_duplicate) VALUES (?, ?, ?, ?)");
                         // Execute the INSERT query with values
                         $insertAttendance->execute([$id_num, $log_type, $date, 1]);
                     }
-
                 }
-                // Get the latest data of the id num
-                // Insert the latest attendance data to the tbl_attendance
-       
             }else{
                 echo "exists";
             }
         }
-        // print_r($users);
-        // print_r($users_attendance);
-        // DBService::saveUsersToDB($users);
-        // $users = $zk->getUser();
     }
 
 
