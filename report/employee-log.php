@@ -56,7 +56,10 @@ td {
                                 <label for="simpleinput" class="form-label">Employee</label>
                                 <select class="form-select" name="emp" data-width="100%">
                                     <option value="<?php echo $emp1Id; ?>"><?php echo $emp1Name; ?></option>
+
                                     <?php
+
+
 											$emp = $conn->prepare("SELECT * FROM tbl_users WHERE user_id != '$emp1Id' AND is_deleted != '1'");
 											$emp->execute();
 											while ($emp_data = $emp->fetch())
@@ -91,13 +94,15 @@ td {
 
 			if($emp != 0)
 			{
+				$sql = $conn->prepare("SELECT * FROM tbl_users WHERE user_id = '$emp' AND is_deleted != '1' LIMIT 1");
+				$sql->execute();
 				$empQ = "AND id_num = '$emp'";
 			} else {
 				$empQ = "";
+				$sql = $conn->prepare("SELECT * FROM tbl_users WHERE is_deleted != '1'");
+				$sql->execute();
 			}
-
-			$sql = $conn->prepare("SELECT * FROM tbl_users WHERE is_deleted != '1'");
-			$sql->execute();
+		
 	?>
     <div class="col-12">
         <div class="card">
@@ -121,6 +126,8 @@ td {
                                             <?php echo $sql_data['middle_name']; ?></th>
                                         <th data-priority="1">Date | Time</th>
                                         <th data-priority="3">Status</th>
+										<th data-priority="3">is_sent</th>
+										<th data-priority="3">is_duplicate</th>
                                     </tr>
                                 </thead>
 
@@ -137,6 +144,9 @@ td {
 														$isLog = "Logged In";
 														
 														$type = $att_data['log_type'];
+														$is_sent = $att_data['is_sent'];
+														$is_duplicate = $att_data['is_duplicate'];
+														$at_id = $att_data['al_id'];
 														switch($type){
 															case '0' :
 																$bgColor = "#5ac172";
@@ -169,9 +179,11 @@ td {
 														// }
 											?>
                                     <tr>
-                                        <th></th>
+                                        <td><?php echo $at_id	; ?> </td>
                                         <td><?php echo $aDateTime; ?></td>
                                         <td style="color: <?php echo $bgColor; ?>;"><?php echo $isLog; ?></td>
+										<td style="color: <?php echo $bgColor; ?>;"><?php echo $is_sent; ?></td>
+										<td style="color: <?php echo $bgColor; ?>;"><?php echo $is_duplicate; ?></td>
                                     </tr>
                                     <?php
 													}

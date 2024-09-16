@@ -63,6 +63,35 @@ class ZKLibrary{
 	public $timeout_usec = 500000;
 	public $ip = '192.168.0.31';
 
+	public function disconnect()
+	{
+		if($this->ip == null || $this->port == null)
+		{
+			return false;
+		}
+		$command = CMD_EXIT;
+		$command_string = '';
+		$chksum = 0;
+		$session_id = $this->session_id;
+		$u = unpack('H2h1/H2h2/H2h3/H2h4/H2h5/H2h6/H2h7/H2h8', substr($this->received_data, $this->start_data, 8));
+		$reply_id = hexdec( $u['h8'].$u['h7'] );
+		$buf = $this->createHeader($command, $chksum, $session_id, $reply_id, $command_string);
+		$this->send($buf);
+		try
+		{
+			$this->received_data = $this->recv();
+			return $this->checkValid($this->received_data);
+		}
+		catch(ErrorException $e)
+		{
+			return FALSE;
+		}
+		catch(Exception $e)
+		{
+			return FALSE;
+		}
+	}
+	
 	private function reverseHex($input)
 	{
 		$output = '';

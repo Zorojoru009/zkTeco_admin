@@ -65,7 +65,7 @@
     // Example PHP function
 
     function getAttendance() {
-
+        
         require_once '../global-library/config.php';
         require_once '../include/functions.php';
         include '../global-library/database.php';
@@ -85,11 +85,19 @@
         $zk->connect();
 
         $users_attendance = $zk->getAttendance();
-        
-        usort($users_attendance, function($a, $b) {
-            return strtotime($a[3]) - strtotime($b[3]);
-        });
-        
+        $users_attendance = array_reverse($users_attendance);
+
+    //    $sorted_users_attendance = usort($users_attendance, function($a, $b) {
+    //         return strtotime($a[3]) - strtotime($b[3]);
+    //     });
+
+        // echo "Sorted: ";
+        // print_r($sorted_users_attendance);
+
+        echo "Unsorted: ";
+        // It's already sorted the way I want it to be
+        print_r($reversed_array);
+
         echo "Get attendance Success";
         // $attendance_json = json_encode($users_attendance);
 
@@ -111,7 +119,7 @@
                 $today = date('Y-m-d', strtotime($date));
                 $get_attendance_id_num = $conn->prepare("SELECT * FROM tbl_attendance WHERE id_num = ? AND date_time LIKE ? ORDER BY date_time DESC LIMIT 1");
                 $today = $today . '%';
-                
+
                 $get_attendance_id_num->execute([$id_num, $today]); 
 
                 // Execute the SELECT query
@@ -124,7 +132,7 @@
                         // Execute the INSERT query with values
                         $insertAttendance->execute([$id_num, $log_type, $date]);
                     }else{
-                        $insertAttendance = $conn->prepare("INSERT INTO tbl_attendance (id_num, log_type, date_time) VALUES (?, ?, ?, ?)");
+                        $insertAttendance = $conn->prepare("INSERT INTO tbl_attendance (id_num, log_type, date_time, is_duplicate) VALUES (?, ?, ?, ?)");
                         // Execute the INSERT query with values
                         $insertAttendance->execute([$id_num, $log_type, $date, 1]);
                     }
@@ -143,6 +151,8 @@
                 echo "exists";
             }
         }
+
+        $zk->disconnect();
     }
 
 
@@ -188,7 +198,7 @@
                     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
                     curl_setopt($ch, CURLOPT_POST, true);
                     curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
-                    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true); // Follow redirects
+                    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true); // Follow redirectsbreadde
                     curl_setopt($ch, CURLOPT_MAXREDIRS, 10); // Set the maximum number of redirects
     
                     $response = curl_exec($ch);
@@ -201,10 +211,17 @@
                         echo "Response status code: " . $http_code . "\n";
                         echo "Response body: " . $response;
                         if ($http_code == 200) {
-                            $is_sent = $conn->prepare("UPDATE tbl_attendance SET is_sent = '1' WHERE al_id = :al_id");
-                            $is_sent->bindParam(':al_id', $al_id, PDO::PARAM_INT);
-                            $is_sent->execute();
-                            echo 'attendance sent';
+                            $response_json = json_decode($response, true);
+                            $status = $response_json['status'];
+                            if ($status == 'Successful Entry') {
+                                $is_sent = $conn->prepare("UPDATE tbl_attendance SET is_sent = '1' WHERE al_id = :al_id");
+                                $is_sent->bindParam(':al_id', $al_id, PDO::PARAM_INT);
+                                $is_sent->execute();
+                                echo 'attendance sent inside status';
+                            }else{
+                                continue;
+                            }
+                          
                         } else {
                             echo "error";
                         }
@@ -348,7 +365,7 @@
                 
                 // Process the response
                 echo "Response status code: " . $status_code . "\n";
-                echo "Response body: " . $response;
+                echo "Response body: " . $response; 
                 if($status_code == 200){
                     $is_sent = $conn->prepare("UPDATE tbl_attendance SET is_sent = '1' WHERE al_id = $ul_id");
                 }else{
